@@ -1,0 +1,89 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#07090e"><title>EdgeHunt — Hunt the edge</title><style>
+:root{--bg:#07090e;--p:#11151e;--b:#282e3a;--t:#f7f8fb;--m:#929aaa;--a:#7c5cff}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% -10%,#241a50,transparent 35%),var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.wrap{max-width:1180px;margin:auto;padding:20px 16px 60px}.head{display:flex;justify-content:space-between;align-items:center}.logo{font-size:30px;font-weight:900}.logo span{color:var(--a)}.tag{font-size:10px;color:var(--m);border:1px solid var(--b);padding:7px 10px;border-radius:99px}.nav,.chips{display:flex;gap:8px;overflow:auto;margin:20px 0 15px}.nav button,.chips button{background:#141820;color:#b9c0cb;border:1px solid var(--b);border-radius:99px;padding:10px 15px;white-space:nowrap}.nav button.active,.chips button.active{background:var(--a);color:#fff;border-color:var(--a)}.hero{padding:24px;border-radius:23px;border:1px solid #382d64;background:linear-gradient(135deg,#211644,#111720);margin-bottom:22px}.ey{color:#b3a7ff;font-size:12px;font-weight:800}.hero h1{font-size:clamp(31px,5vw,52px);line-height:1;margin:8px 0}.hero p{color:#a5adba;max-width:650px;line-height:1.5}.minirow{display:flex;gap:8px;flex-wrap:wrap}.mini{background:#090c13aa;border:1px solid #43366d;border-radius:12px;padding:9px 12px;font-size:11px}.mini b{display:block;font-size:17px;color:#fff}.headrow{display:flex;justify-content:space-between;align-items:end;margin:20px 0 10px}.muted{color:var(--m);font-size:13px}.search{width:100%;background:var(--p);border:1px solid var(--b);border-radius:12px;color:#fff;padding:13px;margin-bottom:12px;font-size:15px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:13px}.card{background:linear-gradient(180deg,#121720,#0f131b);border:1px solid var(--b);border-radius:18px;padding:16px}.top{display:flex;justify-content:space-between;gap:10px}.player{font-size:18px;font-weight:850}.prop{font-size:13px;color:#adb5c2;margin-top:3px}.match{font-size:11px;color:#6f7888;margin-top:7px}.score{text-align:right;font-size:24px;font-weight:900}.score small{display:block;font-size:9px;color:var(--m)}.bar{height:6px;background:#292f39;border-radius:99px;margin:13px 0}.bar i{display:block;height:100%;background:linear-gradient(90deg,#6851ff,#9a87ff);border-radius:99px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-size:10px;color:var(--m)}.stats b{display:block;color:#fff;font-size:14px;margin-top:3px}.books{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:13px}.book{background:#0a0d13;border:1px solid var(--b);border-radius:10px;padding:8px 3px;text-align:center;color:#8992a2;font-size:9px}.book b{display:block;color:#fff;font-size:12px;margin-top:3px}.book.best{border-color:#6653cc;background:#141128}.book.best:after{content:"BEST";display:block;color:#a99cff;font-size:7px}.btn{width:100%;margin-top:12px;padding:12px;border:0;border-radius:12px;background:var(--a);color:#fff;font-weight:800}.btn.alt{background:#191e28;border:1px solid var(--b)}.empty{text-align:center;color:var(--m);padding:45px;border:1px dashed var(--b);border-radius:18px}.disc{font-size:10px;color:#687181;line-height:1.45;margin-top:20px}@media(max-width:650px){.grid{grid-template-columns:1fr}.books{grid-template-columns:repeat(2,1fr)}} 
+</style></head><body><div class="wrap"><header class="head"><div class="logo">Edge<span>Hunt</span></div><div class="tag">LIVE NFL • ODDS API</div></header><nav class="nav"><button class="active" data-page="home">🔥 Best Bets</button><button data-page="props">🎯 Prop Board</button><button data-page="long">💰 Longshots</button><button data-page="slip">🧾 My Slip <span id="count"></span></button></nav><main id="app"></main><div id="liveStatus" class="disc" style="margin-top:12px">Connecting to live NFL odds…</div><div class="disc">Live market data is supplied by The Odds API. Projections, hit rates, and model edge will be added when EdgeHunt’s prediction model is connected. EdgeHunt does not guarantee results.</div></div>
+<script>
+let P=[],page="home",slip=[],q="",live=false,lastFetch=null;
+const labels=["PrizePicks","Underdog","DraftKings","FanDuel"];
+const app=document.getElementById("app"),count=document.getElementById("count"),status=document.getElementById("liveStatus");
+function marketName(m){return ({player_pass_yds:'Passing Yards',player_pass_tds:'Passing TDs',player_rush_yds:'Rushing Yards',player_receptions:'Receptions',player_reception_yds:'Receiving Yards',player_rush_reception_yds:'Rush + Receiving Yards',player_pass_completions:'Pass Completions',player_rush_attempts:'Rush Attempts',player_reception_tds:'Receiving TDs',player_rush_tds:'Rushing TDs'})[m]||m.replaceAll('_',' ')}
+function makeLiveProps(rows){
+  const groups=new Map();
+  for(const r of rows){
+    const k=`${r.eventId}|${r.market}|${r.player}|${r.point}`;
+    if(!groups.has(k)) groups.set(k,{r,books:{}});
+    groups.get(k).books[r.bookmaker]=r;
+  }
+  return [...groups.values()].map(g=>{
+    const r=g.r, books=g.books;
+    const vals=["prizepicks","underdog","draftkings","fanduel"].map(k=>{
+      const v=books[k]?.point;
+      return v==null?"—":String(v);
+    });
+    return [
+      r.player,
+      `${r.awayTeam} @ ${r.homeTeam}`,
+      `${r.side} ${r.point} ${marketName(r.market)}`,
+      "LIVE",
+      "—",
+      "—",
+      "Market",
+      vals,
+      "best",
+      r.market,
+      r.eventId,
+      Object.values(books)
+    ];
+  });
+}
+function card(x){
+  const i=P.indexOf(x);
+  const books=x[10]||[];
+  const bookMap={prizepicks:"PrizePicks",underdog:"Underdog",draftkings:"DraftKings",fanduel:"FanDuel"};
+  const bookCells=["prizepicks","underdog","draftkings","fanduel"].map(k=>{
+    const row=books.find(b=>b.bookmaker===k);
+    return `<div class="book ${row?'best':''}">${bookMap[k]}<b>${row?`${row.point} ${row.price>0?'+':''}${row.price}`:"—"}</b></div>`;
+  }).join("");
+  return `<article class="card">
+    <div class="top"><div><div class="player">${x[0]}</div><div class="prop">${x[2]}</div><div class="match">${x[1]}</div></div><div class="score">LIVE<small>MARKET</small></div></div>
+    <div class="stats"><div>LAST 10<b>—</b></div><div>PROJECTION<b>—</b></div><div>MODEL EDGE<b>—</b></div></div>
+    <div class="books">${bookCells}</div>
+    <button class="btn" data-i="${i}">${slip.includes(i)?"Remove from Slip":"Add to Slip"}</button>
+  </article>`;
+}
+function show(){
+ count.textContent=slip.length?`(${slip.length})`:"";
+ const empty='<div class="empty">No current NFL player props are available right now.<br><br>EdgeHunt will automatically check again in 60 seconds.</div>';
+ if(page==="home")app.innerHTML=`<section class="hero"><div class="ey">🔥 EDGEHUNT INTELLIGENCE</div><h1>Hunt the edge.<br>Find the play.</h1><p>Live NFL player props from The Odds API, normalized across available sportsbooks and refreshed automatically.</p><div class="minirow"><div class="mini"><b>${P.length}</b>Live props</div><div class="mini"><b>60s</b>Refresh target</div><div class="mini"><b>4+</b>Books</div></div></section><div class="headrow"><h2>Top Bets</h2><span class="muted">${live?'Live market data':'Waiting for live data'}</span></div><div class="grid">${P.length?P.slice(0,12).map(card).join(""):empty}</div>`;
+ if(page==="props")app.innerHTML=`<div class="headrow"><div><h2>Prop Board</h2><span class="muted">Search and compare live NFL props.</span></div></div><input id="q" class="search" placeholder="Search player, prop or matchup" value="${q}"><div class="grid">${P.filter(x=>(x[0]+" "+x[2]+" "+x[1]).toLowerCase().includes(q.toLowerCase())).map(card).join("")||empty}</div>`;
+ if(page==="long")app.innerHTML=`<section class="hero"><div class="ey">💰 LONGSHOT HUNTER</div><h1>Hunt the big ones.</h1><p>Higher-variance plays with larger potential payouts.</p></section><div class="grid">${empty}</div>`;
+ if(page==="slip")app.innerHTML=`<div class="headrow"><div><h2>My Slip</h2><span class="muted">${slip.length} selection${slip.length===1?"":"s"}</span></div></div>${slip.length?`<div class="grid">${slip.map(i=>card(P[i])).join("")}</div><button class="btn alt" id="clear">Clear Slip</button>`:'<div class="empty">Your slip is empty.<br><br>Add a play from the Prop Board.</div>'}`;
+ document.querySelectorAll("[data-i]").forEach(el=>el.onclick=()=>{const i=+el.dataset.i;slip.includes(i)?slip=slip.filter(v=>v!==i):slip.push(i);show()});
+ document.getElementById("q")?.addEventListener("input",e=>{q=e.target.value;show()});
+ document.getElementById("clear")?.addEventListener("click",()=>{slip=[];show()});
+}
+async function loadLive(){
+ try{
+  const r=await fetch('/api/nfl-props',{cache:'no-store'});
+  const data=await r.json();
+  if(!r.ok) throw new Error(data.error||'Live feed error');
+  if(Array.isArray(data.props)&&data.props.length){
+    P=makeLiveProps(data.props);
+    live=true;
+    lastFetch=new Date(data.fetchedAt);
+    status.textContent=`🟢 LIVE NFL ODDS • ${data.count} market rows • Last checked ${lastFetch.toLocaleTimeString([], {hour:'numeric',minute:'2-digit',second:'2-digit'})} • Auto-refreshing every 60 seconds`;
+  } else {
+    P=[];
+    live=false;
+    status.textContent=`🟡 No current NFL player props available • Last checked ${new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit',second:'2-digit'})} • Checking again in 60 seconds`;
+  }
+ }catch(e){
+  console.error(e);
+  P=[];
+  live=false;
+  status.textContent=`🔴 Live NFL feed unavailable • Checking again in 60 seconds`;
+ }
+ show();
+}
+document.querySelectorAll("[data-page]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-page]").forEach(x=>x.classList.remove("active"));b.classList.add("active");page=b.dataset.page;show()});
+show();loadLive();setInterval(loadLive,60000);
+</script></body></html>
