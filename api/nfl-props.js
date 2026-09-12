@@ -42,7 +42,8 @@ export default async function handler(req, res) {
     const props = [];
 
     for (const row of Array.isArray(data) ? data : data.props || []) {
-      if (!row.player_name || row.line === undefined) continue;
+      const playerName = row.player_name || row.player || "";
+if (!playerName || row.line === undefined) continue;
 
       const base = {
         eventId: row.event_id || null,
@@ -52,7 +53,7 @@ export default async function handler(req, res) {
         bookmaker: row.bookmaker || "unknown",
         bookmakerTitle: row.bookmaker_title || "Unknown",
         market: row.market_key || "",
-        player: row.player_name,
+        player: playerName,
         point: Number(row.line),
         lastUpdate: row.last_update || null
       };
