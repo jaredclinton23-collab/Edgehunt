@@ -826,6 +826,7 @@ const MARKET_NAMES = {
 let props = [];
 let page = "home";
 let search = "";
+  let propFilter = "All";
 let slip = [];
 let live = false;
 
@@ -1140,18 +1141,24 @@ function renderHome(){
 }
 
 function renderProps(){
-
-  const filtered = props.filter(x => {
+const filtered = props.filter(x => {
 
     const text = [
-      x.player,
-      x.market,
-      x.matchup
+        x.player,
+        x.market,
+        x.matchup
     ].join(" ").toLowerCase();
 
-    return text.includes(search.toLowerCase());
+    const market = String(x.market || "").toLowerCase();
 
-  });
+    const typeMatches =
+        propFilter === "All" ||
+        (propFilter === "Passing" && market.startsWith("player_pass_")) ||
+        (propFilter === "Rushing" && market.startsWith("player_rush_")) ||
+        (propFilter === "Receiving" && market.startsWith("player_reception_")) ||
+        (propFilter === "Touchdowns" && market.includes("_tds"));
+
+    return typeMatches && text.includes(search.toLowerCase());
 
   content.innerHTML = `
 
@@ -1204,13 +1211,33 @@ function renderProps(){
   `;
 
   document
-    .getElementById("search")
-    ?.addEventListener("input",e => {
-      search = e.target.value;
-      renderProps();
-    });
+  .getElementById("search")
+  ?.addEventListener("input",e => {
+    search = e.target.value;
+    renderProps();
+  });
 
-  bindCards();
+document
+  .querySelectorAll(".filter")
+  .forEach(button => {
+    button.onclick = () => {
+      propFilter = button.textContent.trim();
+
+      if(propFilter === "All Props"){
+        propFilter = "All";
+      }
+
+      document
+        .querySelectorAll(".filter")
+        .forEach(x => x.classList.remove("active"));
+
+      button.classList.add("active");
+
+      renderProps();
+    };
+  });
+
+bindCards();
 
 }
 
