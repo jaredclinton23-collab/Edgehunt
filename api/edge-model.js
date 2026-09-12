@@ -192,6 +192,14 @@ export default async function handler(req, res) {
           statValue(row, sample.market)
         )
         .filter(value => Number.isFinite(value));
+      const historyGames = history
+  .map(row => ({
+    season: Number(row.season),
+    week: Number(row.week),
+    team: row.team || null,
+    value: statValue(row, sample.market)
+  }))
+  .filter(game => Number.isFinite(game.value));
 
       if (!values.length) {
         continue;
@@ -434,7 +442,7 @@ export default async function handler(req, res) {
         },
 
         historyGames:
-          values.length,
+          historyGames,
 
         books: bookList.map(book => ({
           book: book.title,
