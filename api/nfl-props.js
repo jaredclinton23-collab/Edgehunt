@@ -24,8 +24,6 @@ export default async function handler(req, res) {
       "https://parlay-api.com/v1/sports/americanfootball_nfl/props"
     );
 
-    url.searchParams.set("markets", markets);
-
     const response = await fetch(url, {
       headers: {
         "X-API-Key": apiKey
