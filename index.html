@@ -676,14 +676,28 @@ button{
   }
 
   .topbar{
-    margin-bottom:12px;
-    border-radius:15px;
-    padding:10px;
-  }
+  margin-bottom:12px;
+  border-radius:15px;
+  padding:10px 10px 8px;
+  flex-direction:column;
+  align-items:stretch;
+  gap:9px;
+}
 
-  .mainnav{
-    max-width:62vw;
-  }
+.mainnav{
+  width:100%;
+  max-width:none;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:5px;
+}
+
+.mainnav button{
+  width:100%;
+  padding:9px 3px;
+  font-size:9px;
+  text-align:center;
+}
 
   .live-pill{
     display:none;
