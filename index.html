@@ -1,613 +1,1480 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-  <link rel="manifest" href="/manifest.json">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+
+<link rel="manifest" href="/manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="EdgeHunt">
 <link rel="apple-touch-icon" href="/icon-192.png">
-<meta name="theme-color" content="#07090e">
+
+<meta name="theme-color" content="#07070c">
+
 <title>EdgeHunt — Hunt the edge</title>
+
 <style>
-:root{--bg:#07090e;--p:#11151e;--b:#282e3a;--t:#f7f8fb;--m:#929aaa;--a:#7c5cff}
-*{box-sizing:border-box}
-body{margin:0;background:radial-gradient(circle at 80% -10%,#241a50,transparent 35%),var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.wrap{max-width:1180px;margin:auto;padding:20px 16px 60px}
-.head{display:flex;justify-content:space-between;align-items:center}
-.logo{font-size:30px;font-weight:900}.logo span{color:var(--a)}
-.tag{font-size:10px;color:var(--m);border:1px solid var(--b);padding:7px 10px;border-radius:99px}
-.nav{display:flex;gap:8px;overflow:auto;margin:20px 0 15px}
-.nav button{background:#141820;color:#b9c0cb;border:1px solid var(--b);border-radius:99px;padding:10px 15px;white-space:nowrap}
-.nav button.active{background:var(--a);color:#fff;border-color:var(--a)}
-.hero{padding:24px;border-radius:23px;border:1px solid #382d64;background:linear-gradient(135deg,#211644,#111720);margin-bottom:22px}
-.ey{color:#b3a7ff;font-size:12px;font-weight:800}
-.hero h1{font-size:clamp(31px,5vw,52px);line-height:1;margin:8px 0}
-.hero p{color:#a5adba;max-width:650px;line-height:1.5}
-.minirow{display:flex;gap:8px;flex-wrap:wrap}
-.mini{background:#090c13aa;border:1px solid #43366d;border-radius:12px;padding:9px 12px;font-size:11px}
-.mini b{display:block;font-size:17px;color:#fff}
-.headrow{display:flex;justify-content:space-between;align-items:end;margin:20px 0 10px}
-.muted{color:var(--m);font-size:13px}
-.search{width:100%;background:var(--p);border:1px solid var(--b);border-radius:12px;color:#fff;padding:13px;margin-bottom:12px;font-size:15px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:13px}
-.card{background:linear-gradient(180deg,#121720,#0f131b);border:1px solid var(--b);border-radius:18px;padding:16px}
-.top{display:flex;justify-content:space-between;gap:10px}
-.player{font-size:18px;font-weight:850}
-.prop{font-size:13px;color:#adb5c2;margin-top:3px}
-.match{font-size:11px;color:#6f7888;margin-top:7px}
-.score{text-align:right;font-size:24px;font-weight:900}
-.score small{display:block;font-size:9px;color:var(--m)}
-.bar{height:6px;background:#292f39;border-radius:99px;margin:13px 0}
-.bar i{display:block;height:100%;background:linear-gradient(90deg,#6851ff,#9a87ff);border-radius:99px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-size:10px;color:var(--m)}
-.stats b{display:block;color:#fff;font-size:14px;margin-top:3px}
-.books{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:13px}
-.book{background:#0a0d13;border:1px solid var(--b);border-radius:10px;padding:8px 3px;text-align:center;color:#8992a2;font-size:9px}
-.book b{display:block;color:#fff;font-size:12px;margin-top:3px}
-.book.best{border-color:#6653cc;background:#141128}
-.book.best:after{content:"BEST";display:block;color:#a99cff;font-size:7px}
-.btn{width:100%;margin-top:12px;padding:12px;border:0;border-radius:12px;background:var(--a);color:#fff;font-weight:800}
-.btn.alt{background:#191e28;border:1px solid var(--b)}
-.empty{text-align:center;color:var(--m);padding:45px;border:1px dashed var(--b);border-radius:18px}
-.disc{font-size:10px;color:#687181;line-height:1.45;margin-top:20px}
-@media(max-width:650px){.grid{grid-template-columns:1fr}.books{grid-template-columns:repeat(2,1fr)}}
+:root{
+  --bg:#07070c;
+  --panel:#101017;
+  --panel2:#15151e;
+  --line:#292934;
+  --text:#f7f7fb;
+  --muted:#8d8d9d;
+  --purple:#9a63ff;
+  --purple2:#c05cff;
+  --pink:#ff4fd8;
+  --green:#48e39b;
+  --red:#ff5f6d;
+  --yellow:#ffd35c;
+  --shadow:0 18px 55px rgba(0,0,0,.45);
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html{
+  background:var(--bg);
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--text);
+  background:
+    radial-gradient(circle at 50% -10%,rgba(155,80,255,.25),transparent 32%),
+    radial-gradient(circle at 100% 30%,rgba(255,52,205,.08),transparent 30%),
+    var(--bg);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+
+button,
+input{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+.app{
+  width:min(1180px,100%);
+  margin:auto;
+  padding:18px 16px 60px;
+}
+
+/* TOP NAV */
+
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:20;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  padding:13px 16px;
+  margin-bottom:20px;
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:18px;
+  background:rgba(12,12,18,.86);
+  backdrop-filter:blur(18px);
+  box-shadow:0 10px 35px rgba(0,0,0,.28);
+}
+
+.logo{
+  font-size:23px;
+  font-weight:950;
+  letter-spacing:-1px;
+  white-space:nowrap;
+}
+
+.logo span{
+  background:linear-gradient(90deg,var(--purple),var(--pink));
+  -webkit-background-clip:text;
+  color:transparent;
+}
+
+.mainnav{
+  display:flex;
+  gap:7px;
+  overflow:auto;
+}
+
+.mainnav button{
+  border:0;
+  background:transparent;
+  color:#9898a7;
+  padding:9px 13px;
+  border-radius:10px;
+  white-space:nowrap;
+  font-size:12px;
+  font-weight:800;
+}
+
+.mainnav button.active{
+  color:#fff;
+  background:linear-gradient(135deg,#854fff,#c149d8);
+  box-shadow:0 5px 20px rgba(150,70,255,.3);
+}
+
+.live-pill{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  border:1px solid rgba(72,227,155,.25);
+  background:rgba(72,227,155,.08);
+  color:var(--green);
+  padding:7px 10px;
+  border-radius:99px;
+  font-size:9px;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.dot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 10px var(--green);
+}
+
+/* HERO */
+
+.hero{
+  position:relative;
+  overflow:hidden;
+  min-height:330px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:42px 38px;
+  border:1px solid rgba(190,100,255,.3);
+  border-radius:26px;
+  background:
+    radial-gradient(circle at 85% 40%,rgba(255,56,210,.24),transparent 25%),
+    radial-gradient(circle at 70% 100%,rgba(108,68,255,.35),transparent 40%),
+    linear-gradient(135deg,#171127,#0d0d15 65%);
+  box-shadow:0 0 70px rgba(148,60,255,.14);
+}
+
+.hero:after{
+  content:"";
+  position:absolute;
+  width:330px;
+  height:330px;
+  right:-120px;
+  top:-100px;
+  border-radius:50%;
+  background:rgba(191,71,255,.12);
+  filter:blur(45px);
+}
+
+.eyebrow{
+  position:relative;
+  z-index:2;
+  width:max-content;
+  color:#d39cff;
+  font-size:10px;
+  font-weight:950;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  padding:7px 11px;
+  border:1px solid rgba(195,100,255,.35);
+  border-radius:99px;
+  background:rgba(172,76,255,.1);
+}
+
+.hero h1{
+  position:relative;
+  z-index:2;
+  max-width:700px;
+  margin:17px 0 10px;
+  font-size:clamp(42px,7vw,76px);
+  line-height:.94;
+  letter-spacing:-4px;
+}
+
+.hero h1 span{
+  background:linear-gradient(90deg,#fff,#d88cff 55%,#ff5cdb);
+  -webkit-background-clip:text;
+  color:transparent;
+}
+
+.hero p{
+  position:relative;
+  z-index:2;
+  max-width:640px;
+  margin:0;
+  color:#aaaaba;
+  font-size:14px;
+  line-height:1.6;
+}
+
+.hero-stats{
+  position:relative;
+  z-index:2;
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  margin-top:26px;
+}
+
+.hero-stat{
+  min-width:105px;
+  padding:11px 13px;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:12px;
+  background:rgba(0,0,0,.27);
+}
+
+.hero-stat b{
+  display:block;
+  font-size:19px;
+}
+
+.hero-stat span{
+  color:#858596;
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:.8px;
+}
+
+/* SECTION */
+
+.section-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:15px;
+  margin:30px 2px 13px;
+}
+
+.section-title{
+  margin:0;
+  font-size:22px;
+  letter-spacing:-.6px;
+}
+
+.section-sub{
+  margin-top:4px;
+  color:var(--muted);
+  font-size:11px;
+}
+
+.section-action{
+  color:#b67cff;
+  font-size:10px;
+  font-weight:900;
+}
+
+/* FILTERS */
+
+.filters{
+  display:flex;
+  gap:7px;
+  overflow:auto;
+  padding-bottom:4px;
+  margin-bottom:14px;
+}
+
+.filter{
+  border:1px solid var(--line);
+  background:#111119;
+  color:#9696a7;
+  border-radius:99px;
+  padding:8px 12px;
+  font-size:10px;
+  font-weight:800;
+  white-space:nowrap;
+}
+
+.filter.active{
+  color:#fff;
+  border-color:#985cff;
+  background:rgba(145,77,255,.18);
+}
+
+/* GRID */
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:13px;
+}
+
+/* PROP CARD */
+
+.card{
+  position:relative;
+  overflow:hidden;
+  border:1px solid var(--line);
+  border-radius:20px;
+  background:
+    linear-gradient(180deg,rgba(22,22,31,.98),rgba(12,12,18,.98));
+  box-shadow:0 12px 35px rgba(0,0,0,.2);
+}
+
+.card:hover{
+  border-color:#4d3a69;
+}
+
+.card-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:15px 16px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+
+.player-wrap{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  min-width:0;
+}
+
+.avatar{
+  width:38px;
+  height:38px;
+  flex:none;
+  display:grid;
+  place-items:center;
+  border-radius:11px;
+  background:linear-gradient(135deg,#252235,#11111a);
+  border:1px solid #363044;
+  font-size:12px;
+  font-weight:950;
+}
+
+.player-name{
+  font-size:14px;
+  font-weight:900;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.player-meta{
+  color:#777788;
+  font-size:9px;
+  margin-top:3px;
+}
+
+.edge-box{
+  text-align:right;
+}
+
+.edge-number{
+  font-size:25px;
+  line-height:1;
+  font-weight:950;
+  background:linear-gradient(135deg,#fff,#bf78ff);
+  -webkit-background-clip:text;
+  color:transparent;
+}
+
+.edge-label{
+  color:#777788;
+  font-size:7px;
+  font-weight:900;
+  letter-spacing:.8px;
+}
+
+.card-body{
+  padding:15px 16px;
+}
+
+.prop-line{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.prop-name{
+  color:#aaaaba;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+  font-weight:800;
+}
+
+.pick{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  margin-top:7px;
+}
+
+.side{
+  color:#fff;
+  font-size:24px;
+  font-weight:950;
+}
+
+.line{
+  color:#b36fff;
+  font-size:24px;
+  font-weight:950;
+}
+
+.projection{
+  color:#818191;
+  font-size:10px;
+}
+
+.projection strong{
+  color:#fff;
+}
+
+.matchup{
+  margin-top:6px;
+  color:#666677;
+  font-size:9px;
+}
+
+.edge-bar{
+  height:6px;
+  margin:15px 0;
+  border-radius:99px;
+  background:#272731;
+  overflow:hidden;
+}
+
+.edge-bar span{
+  display:block;
+  height:100%;
+  border-radius:99px;
+  background:linear-gradient(90deg,#7046ff,#ff54d9);
+}
+
+.stat-row{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:6px;
+}
+
+.stat{
+  padding:9px 8px;
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:10px;
+  background:#0d0d14;
+}
+
+.stat span{
+  display:block;
+  color:#666676;
+  font-size:7px;
+  text-transform:uppercase;
+  font-weight:900;
+}
+
+.stat b{
+  display:block;
+  margin-top:4px;
+  color:#fff;
+  font-size:12px;
+}
+
+.good{
+  color:var(--green)!important;
+}
+
+.best-book{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-top:9px;
+  padding:9px 10px;
+  border:1px solid rgba(154,99,255,.18);
+  border-radius:10px;
+  background:rgba(123,65,255,.07);
+}
+
+.best-book span{
+  color:#777788;
+  font-size:8px;
+  font-weight:800;
+}
+
+.best-book b{
+  color:#c48bff;
+  font-size:10px;
+}
+
+.book-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:5px;
+  margin-top:9px;
+}
+
+.book{
+  padding:7px 3px;
+  text-align:center;
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:8px;
+  background:#0a0a10;
+}
+
+.book span{
+  display:block;
+  color:#656574;
+  font-size:6px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.book b{
+  display:block;
+  margin-top:3px;
+  font-size:9px;
+}
+
+.card-actions{
+  display:flex;
+  gap:7px;
+  padding:0 16px 15px;
+}
+
+.action{
+  flex:1;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid var(--line);
+  color:#aaaaba;
+  background:#171720;
+  font-size:9px;
+  font-weight:900;
+}
+
+.action.primary{
+  border-color:#9258ed;
+  color:#fff;
+  background:linear-gradient(135deg,#7046dc,#ad4fbc);
+}
+
+/* EMPTY */
+
+.empty{
+  grid-column:1/-1;
+  padding:55px 25px;
+  text-align:center;
+  border:1px dashed #30303c;
+  border-radius:20px;
+  background:#0d0d13;
+}
+
+.empty-icon{
+  font-size:28px;
+  margin-bottom:10px;
+}
+
+.empty h3{
+  margin:0 0 7px;
+  font-size:16px;
+}
+
+.empty p{
+  margin:0;
+  color:#777788;
+  font-size:10px;
+  line-height:1.6;
+}
+
+/* SEARCH */
+
+.search-box{
+  position:relative;
+  margin-bottom:12px;
+}
+
+.search-box input{
+  width:100%;
+  padding:13px 15px 13px 38px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  outline:none;
+  color:#fff;
+  background:#101018;
+  font-size:12px;
+}
+
+.search-box input:focus{
+  border-color:#7650b4;
+}
+
+.search-icon{
+  position:absolute;
+  left:14px;
+  top:50%;
+  transform:translateY(-50%);
+  color:#777788;
+}
+
+/* SLIP */
+
+.slip-summary{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:17px;
+  margin-bottom:13px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:#111119;
+}
+
+.slip-summary strong{
+  font-size:19px;
+}
+
+.slip-summary span{
+  color:#777788;
+  font-size:9px;
+}
+
+.clear{
+  border:0;
+  color:#ff7e88;
+  background:transparent;
+  font-size:9px;
+  font-weight:900;
+}
+
+/* FOOTER */
+
+.status{
+  margin-top:20px;
+  color:#777788;
+  text-align:center;
+  font-size:9px;
+}
+
+.disclaimer{
+  max-width:800px;
+  margin:15px auto 0;
+  color:#555563;
+  text-align:center;
+  font-size:8px;
+  line-height:1.6;
+}
+
+/* MOBILE */
+
+@media(max-width:760px){
+
+  .app{
+    padding:10px 10px 45px;
+  }
+
+  .topbar{
+    margin-bottom:12px;
+    border-radius:15px;
+    padding:10px;
+  }
+
+  .mainnav{
+    max-width:62vw;
+  }
+
+  .live-pill{
+    display:none;
+  }
+
+  .hero{
+    min-height:350px;
+    padding:30px 22px;
+    border-radius:21px;
+  }
+
+  .hero h1{
+    font-size:48px;
+    letter-spacing:-2.5px;
+  }
+
+  .hero p{
+    font-size:12px;
+  }
+
+  .hero-stat{
+    min-width:92px;
+  }
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .section-head{
+    margin-top:24px;
+  }
+
+  .book-grid{
+    grid-template-columns:repeat(4,1fr);
+  }
+}
+
+@media(max-width:430px){
+
+  .logo{
+    font-size:20px;
+  }
+
+  .mainnav button{
+    padding:8px 10px;
+    font-size:10px;
+  }
+
+  .hero h1{
+    font-size:43px;
+  }
+
+  .hero-stat{
+    min-width:85px;
+  }
+}
 </style>
 </head>
 
 <body>
-<div class="wrap">
 
-<header class="head">
-<div class="logo">Edge<span>Hunt</span></div>
-<div class="tag">LIVE NFL • ODDS API</div>
-</header>
+<div class="app">
 
-<nav class="nav">
-<button class="active" data-page="home">🔥 Best Bets</button>
-<button data-page="props">🎯 Prop Board</button>
+<header class="topbar">
+
+<div class="logo">
+Edge<span>Hunt</span>
+</div>
+
+<nav class="mainnav">
+
+<button class="active" data-page="home">🔥 Top Plays</button>
+<button data-page="props">🎯 Props</button>
 <button data-page="long">💰 Longshots</button>
-<button data-page="slip">🧾 My Slip <span id="count"></span></button>
+<button data-page="slip">🧾 My Slip <span id="slipCount"></span></button>
+
 </nav>
 
-<main id="app"></main>
+<div class="live-pill">
+<span class="dot"></span>
+NFL
+</div>
 
-<div id="liveStatus" class="disc">Connecting to live NFL odds…</div>
+</header>
 
-<div class="disc">
-EdgeHunt currently calculates an initial market-based edge from available sportsbook lines.
-Historical player projections and back-tested model performance will be added as the analytics engine develops.
-EdgeHunt does not guarantee results.
+<main id="appContent"></main>
+
+<div id="status" class="status">
+Connecting to EdgeHunt...
+</div>
+
+<div class="disclaimer">
+EdgeHunt provides player-prop analytics and informational projections.
+It does not accept wagers or process bets. Model results are not guaranteed.
 </div>
 
 </div>
 
 <script>
-const labels=["PrizePicks","Underdog","DraftKings","FanDuel"];
 
-const marketNames={
-player_pass_yds:"Passing Yards",
-player_pass_tds:"Passing TDs",
-player_rush_yds:"Rushing Yards",
-player_receptions:"Receptions",
-player_reception_yds:"Receiving Yards",
-player_rush_reception_yds:"Rush + Receiving Yards",
-player_pass_completions:"Pass Completions",
-player_rush_attempts:"Rush Attempts",
-player_reception_tds:"Receiving TDs",
-player_rush_tds:"Rushing TDs"
+const BOOKS = [
+  {key:"prizepicks",name:"PrizePicks"},
+  {key:"underdog",name:"Underdog"},
+  {key:"draftkings",name:"DraftKings"},
+  {key:"fanduel",name:"FanDuel"}
+];
+
+const MARKET_NAMES = {
+  player_pass_yds:"Passing Yards",
+  player_pass_tds:"Passing TDs",
+  player_pass_completions:"Pass Completions",
+  player_rush_yds:"Rushing Yards",
+  player_rush_attempts:"Rush Attempts",
+  player_rush_tds:"Rushing TDs",
+  player_receptions:"Receptions",
+  player_reception_yds:"Receiving Yards",
+  player_reception_tds:"Receiving TDs",
+  player_rush_reception_yds:"Rush + Receiving Yards"
 };
 
-let P=[];
-let page="home";
-let slip=[];
-let q="";
-let live=false;
+let props = [];
+let page = "home";
+let search = "";
+let slip = [];
+let live = false;
 
-const app=document.getElementById("app");
-const count=document.getElementById("count");
-const status=document.getElementById("liveStatus");
+const content = document.getElementById("appContent");
+const status = document.getElementById("status");
+const slipCount = document.getElementById("slipCount");
 
 function marketName(m){
-return marketNames[m]||m.replaceAll("_"," ");
+  return MARKET_NAMES[m] || String(m || "").replaceAll("_"," ");
 }
 
-function calculateScore(bookCount,lineSpread,priceStrength){
-let score=50;
-
-score+=Math.min(bookCount*5,20);
-score+=Math.min(lineSpread*2.5,15);
-score+=Math.min(priceStrength,10);
-
-return Math.max(50,Math.min(95,Math.round(score)));
+function playerInitials(name){
+  const parts = String(name || "?").trim().split(/\s+/);
+  if(parts.length === 1) return parts[0].slice(0,2).toUpperCase();
+  return (parts[0][0] + parts[parts.length-1][0]).toUpperCase();
 }
 
-function makeLiveProps(rows){
-
-const groups=new Map();
-
-for(const r of rows){
-
-const key=[
-r.eventId,
-r.market,
-r.player
-].join("|");
-
-if(!groups.has(key)){
-groups.set(key,{
-eventId:r.eventId,
-player:r.player,
-market:r.market,
-homeTeam:r.homeTeam,
-awayTeam:r.awayTeam,
-books:{}
-});
+function propId(x){
+  return [
+    x.eventId,
+    x.player,
+    x.market,
+    x.side,
+    x.line
+  ].join("|");
 }
 
-if(!groups.get(key).books[r.bookmaker]){
-groups.get(key).books[r.bookmaker]=[];
+function formatHit(hit){
+  return hit == null ? "—" : `${hit}%`;
 }
 
-groups.get(key).books[r.bookmaker].push(r);
+function formatNumber(value){
+  return value == null || !Number.isFinite(Number(value))
+    ? "—"
+    : Number(value).toFixed(1);
 }
 
-const output=[];
+function bestBook(x){
 
-for(const g of groups.values()){
+  if(x.bestBook?.book){
+    return {
+      name:x.bestBook.book,
+      line:x.bestBook.line
+    };
+  }
 
-const books={};
-
-for(const [book,arr] of Object.entries(g.books)){
-
-const over=arr.find(x=>x.side==="Over");
-const under=arr.find(x=>x.side==="Under");
-
-books[book]={
-over:over||null,
-under:under||null
-};
-}
-
-const allOver=Object.values(books)
-.map(x=>x.over?.point)
-.filter(x=>typeof x==="number");
-
-const allUnder=Object.values(books)
-.map(x=>x.under?.point)
-.filter(x=>typeof x==="number");
-
-if(!allOver.length&&!allUnder.length)continue;
-
-const median=(arr)=>{
-const a=[...arr].sort((x,y)=>x-y);
-const mid=Math.floor(a.length/2);
-return a.length%2?a[mid]:(a[mid-1]+a[mid])/2;
-};
-
-const overLine=allOver.length?median(allOver):null;
-const underLine=allUnder.length?median(allUnder):null;
-
-let side="Over";
-let line=overLine;
-
-if(overLine===null){
-side="Under";
-line=underLine;
-}
-
-const relevant=side==="Over"?allOver:allUnder;
-
-const bestLine=
-side==="Over"
-?Math.max(...relevant)
-:Math.min(...relevant);
-
-const worstLine=
-side==="Over"
-?Math.min(...relevant)
-:Math.max(...relevant);
-
-const spread=Math.abs(bestLine-worstLine);
-
-const prices=Object.values(books)
-.map(x=>(side==="Over"?x.over?.price:x.under?.price))
-.filter(x=>typeof x==="number");
-
-const priceStrength=
-prices.length
-?Math.min(
-10,
-Math.max(
-0,
-Math.max(...prices)>0
-?Math.max(...prices)/100*5
-:0
-))
-:0;
-
-const score=calculateScore(
-relevant.length,
-spread,
-priceStrength
-);
-
-const projection=
-side==="Over"
-?line+spread*.35
-:line-spread*.35;
-
-const edgePct=
-line
-?Math.abs((projection-line)/Math.abs(line))*100
-:0;
-
-const bookValues=labels.map(label=>{
-
-const key={
-PrizePicks:"prizepicks",
-Underdog:"underdog",
-DraftKings:"draftkings",
-FanDuel:"fanduel"
-}[label];
-
-const item=books[key];
-
-if(!item)return"—";
-
-const selected=side==="Over"?item.over:item.under;
-
-return selected?.point!=null
-?String(selected.point)
-:"—";
-});
-
-output.push({
-player:g.player,
-matchup:`${g.awayTeam} @ ${g.homeTeam}`,
-market:g.market,
-side,
-line,
-projection,
-edgePct,
-score,
-bookValues,
-spread,
-bookCount:relevant.length,
-eventId:g.eventId
-});
-}
-
-return output.sort((a,b)=>b.score-a.score);
+  return null;
 }
 
 function card(x){
 
-const i=P.indexOf(x);
+  const id = propId(x);
+  const selected = slip.includes(id);
+  const best = bestBook(x);
 
-return `
-<article class="card">
+  const l5 = x.l5?.hitRate;
+  const l10 = x.l10?.hitRate;
+  const l20 = x.l20?.hitRate;
 
-<div class="top">
+  const score = Math.max(0,Math.min(100,Number(x.edgeScore || x.edgeScore === 0 ? x.edgeScore : x.score || 0)));
 
-<div>
-<div class="player">${x.player}</div>
+  return `
+  <article class="card">
 
-<div class="prop">
-${x.side} ${x.line} ${marketName(x.market)}
-</div>
+    <div class="card-top">
 
-<div class="match">
-${x.matchup}
-</div>
-</div>
+      <div class="player-wrap">
 
-<div class="score">
-${x.score}
-<small>EDGE SCORE</small>
-</div>
+        <div class="avatar">
+          ${playerInitials(x.player)}
+        </div>
 
-</div>
+        <div>
+          <div class="player-name">${x.player || "Player"}</div>
+          <div class="player-meta">${x.matchup || "NFL matchup"}</div>
+        </div>
 
-<div class="bar">
-<i style="width:${x.score}%"></i>
-</div>
+      </div>
 
-<div class="stats">
+      <div class="edge-box">
+        <div class="edge-number">${score || "—"}</div>
+        <div class="edge-label">EDGE SCORE</div>
+      </div>
 
-<div>
-BOOKS
-<b>${x.bookCount}</b>
-</div>
+    </div>
 
-<div>
-PROJECTION
-<b>${x.projection.toFixed(1)}</b>
-</div>
+    <div class="card-body">
 
-<div>
-MARKET EDGE
-<b>+${x.edgePct.toFixed(1)}%</b>
-</div>
+      <div class="prop-line">
+        <div class="prop-name">${marketName(x.market)}</div>
+        <div class="projection">
+          PROJ <strong>${formatNumber(x.projection)}</strong>
+        </div>
+      </div>
 
-</div>
+      <div class="pick">
 
-<div class="books">
+        <div class="side">${x.side || "Over"}</div>
 
-${x.bookValues.map((v,n)=>`
+        <div class="line">${x.line ?? "—"}</div>
 
-<div class="book ${v!=="—"&&v===(x.side==="Over"?String(Math.max(...x.bookValues.filter(z=>z!=="—").map(Number))):String(Math.min(...x.bookValues.filter(z=>z!=="—").map(Number))))?"best":""}">
+      </div>
 
-${labels[n]}
+      <div class="matchup">
+        ${x.matchup || ""}
+      </div>
 
-<b>${v}</b>
+      <div class="edge-bar">
+        <span style="width:${score}%"></span>
+      </div>
 
-</div>
+      <div class="stat-row">
 
-`).join("")}
+        <div class="stat">
+          <span>L5</span>
+          <b class="${l5 >= 70 ? "good" : ""}">
+            ${formatHit(l5)}
+          </b>
+        </div>
 
-</div>
+        <div class="stat">
+          <span>L10</span>
+          <b class="${l10 >= 70 ? "good" : ""}">
+            ${formatHit(l10)}
+          </b>
+        </div>
 
-<button class="btn" data-i="${i}">
-${slip.includes(i)?"Remove from Slip":"Add to Slip"}
-</button>
+        <div class="stat">
+          <span>L20</span>
+          <b class="${l20 >= 70 ? "good" : ""}">
+            ${formatHit(l20)}
+          </b>
+        </div>
 
-</article>`;
+      </div>
+
+      <div class="best-book">
+
+        <span>BEST AVAILABLE LINE</span>
+
+        <b>
+          ${best ? `${best.name} • ${best.line}` : "Market consensus"}
+        </b>
+
+      </div>
+
+      <div class="book-grid">
+
+        ${
+          BOOKS.map(book => {
+
+            const found = (x.books || []).find(
+              b => String(b.book || "").toLowerCase().includes(book.name.toLowerCase())
+            );
+
+            let value = "—";
+
+            if(found){
+              const selectedLine =
+                x.side === "Over"
+                  ? found.over?.line
+                  : found.under?.line;
+
+              if(selectedLine != null){
+                value = selectedLine;
+              }
+            }
+
+            return `
+              <div class="book">
+                <span>${book.name}</span>
+                <b>${value}</b>
+              </div>
+            `;
+
+          }).join("")
+        }
+
+      </div>
+
+    </div>
+
+    <div class="card-actions">
+
+      <button
+        class="action primary"
+        data-slip="${encodeURIComponent(id)}"
+      >
+        ${selected ? "✓ In My Slip" : "＋ Add to Slip"}
+      </button>
+
+      <button
+        class="action"
+        data-view="${encodeURIComponent(id)}"
+      >
+        View Play
+      </button>
+
+    </div>
+
+  </article>
+  `;
 }
 
-function show(){
+function empty(title,text){
 
-count.textContent=slip.length?`(${slip.length})`:"";
+  return `
+    <div class="empty">
 
-if(page==="home"){
+      <div class="empty-icon">🎯</div>
 
-const bets=P.slice(0,12);
+      <h3>${title}</h3>
 
-app.innerHTML=`
+      <p>${text}</p>
 
-<section class="hero">
+    </div>
+  `;
 
-<div class="ey">🔥 EDGEHUNT INTELLIGENCE</div>
-
-<h1>Hunt the edge.<br>Find the play.</h1>
-
-<p>
-Live NFL player props ranked by sportsbook market strength.
-</p>
-
-<div class="minirow">
-
-<div class="mini">
-<b>${P.length}</b>
-Live Props
-</div>
-
-<div class="mini">
-<b>60s</b>
-Refresh Target
-</div>
-
-<div class="mini">
-<b>4+</b>
-Books
-</div>
-
-</div>
-
-</section>
-
-<div class="headrow">
-<h2>Top Bets</h2>
-<span class="muted">${live?"Live market data":"Waiting for live data"}</span>
-</div>
-
-<div class="grid">
-
-${bets.length
-?bets.map(card).join("")
-:`<div class="empty">
-No current NFL player props are available right now.
-<br><br>
-EdgeHunt will automatically check again.
-</div>`}
-
-</div>
-`;
 }
 
-if(page==="props"){
+function renderHome(){
 
-app.innerHTML=`
+  const top = props.slice(0,10);
 
-<div class="headrow">
-<div>
-<h2>Prop Board</h2>
-<span class="muted">Search and compare live NFL props.</span>
-</div>
-</div>
+  content.innerHTML = `
 
-<input
-id="q"
-class="search"
-placeholder="Search player, prop or matchup"
-value="${q}"
->
+    <section class="hero">
 
-<div class="grid">
+      <div class="eyebrow">
+        ⚡ EDGEHUNT INTELLIGENCE
+      </div>
 
-${P.filter(x=>
-(x.player+" "+marketName(x.market)+" "+x.matchup)
-.toLowerCase()
-.includes(q.toLowerCase())
-).map(card).join("")||`
-<div class="empty">No props found.</div>
-`}
+      <h1>
+        Hunt the edge.<br>
+        <span>Find the play.</span>
+      </h1>
 
-</div>
-`;
+      <p>
+        NFL player-prop analytics built to compare the market,
+        measure recent performance, and surface the strongest
+        plays on the board.
+      </p>
+
+      <div class="hero-stats">
+
+        <div class="hero-stat">
+          <b>${props.length}</b>
+          <span>Model Plays</span>
+        </div>
+
+        <div class="hero-stat">
+          <b>${live ? "LIVE" : "—"}</b>
+          <span>NFL Market</span>
+        </div>
+
+        <div class="hero-stat">
+          <b>4+</b>
+          <span>Sportsbooks</span>
+        </div>
+
+        <div class="hero-stat">
+          <b>60s</b>
+          <span>Refresh Target</span>
+        </div>
+
+      </div>
+
+    </section>
+
+    <div class="section-head">
+
+      <div>
+        <h2 class="section-title">🔥 Top Plays</h2>
+        <div class="section-sub">
+          EdgeHunt's highest-rated player props
+        </div>
+      </div>
+
+      <div class="section-action">
+        ${live ? "LIVE MARKET" : "WAITING FOR MARKET"}
+      </div>
+
+    </div>
+
+    <div class="filters">
+
+      <button class="filter active">All NFL</button>
+      <button class="filter">Passing</button>
+      <button class="filter">Rushing</button>
+      <button class="filter">Receiving</button>
+      <button class="filter">TDs</button>
+
+    </div>
+
+    <div class="grid">
+
+      ${
+        top.length
+          ? top.map(card).join("")
+          : empty(
+              "No live NFL props yet",
+              "EdgeHunt is connected and ready. Live player props will appear here when the sportsbook market is available."
+            )
+      }
+
+    </div>
+
+  `;
+
+  bindCards();
+
 }
 
-if(page==="long"){
+function renderProps(){
 
-app.innerHTML=`
+  const filtered = props.filter(x => {
 
-<section class="hero">
+    const text = [
+      x.player,
+      x.market,
+      x.matchup
+    ].join(" ").toLowerCase();
 
-<div class="ey">💰 LONGSHOT HUNTER</div>
+    return text.includes(search.toLowerCase());
 
-<h1>Hunt the big ones.</h1>
+  });
 
-<p>
-High-variance player props with larger potential payouts.
-</p>
+  content.innerHTML = `
 
-</section>
+    <div class="section-head">
 
-<div class="grid">
+      <div>
+        <h2 class="section-title">🎯 Prop Board</h2>
+        <div class="section-sub">
+          Search and compare NFL player props
+        </div>
+      </div>
 
-${P
-.filter(x=>x.score<65)
-.slice(0,12)
-.map(card)
-.join("")||`
-<div class="empty">
-No longshot props are currently available.
-</div>
-`}
+    </div>
 
-</div>
-`;
+    <div class="search-box">
+
+      <div class="search-icon">⌕</div>
+
+      <input
+        id="search"
+        placeholder="Search player, prop or matchup..."
+        value="${search}"
+      >
+
+    </div>
+
+    <div class="filters">
+
+      <button class="filter active">All Props</button>
+      <button class="filter">Passing</button>
+      <button class="filter">Rushing</button>
+      <button class="filter">Receiving</button>
+      <button class="filter">Touchdowns</button>
+
+    </div>
+
+    <div class="grid">
+
+      ${
+        filtered.length
+          ? filtered.map(card).join("")
+          : empty(
+              "No props found",
+              "Try searching for another player, prop type, or matchup."
+            )
+      }
+
+    </div>
+
+  `;
+
+  document
+    .getElementById("search")
+    ?.addEventListener("input",e => {
+      search = e.target.value;
+      renderProps();
+    });
+
+  bindCards();
+
 }
 
-if(page==="slip"){
+function renderLongshots(){
 
-app.innerHTML=`
+  const longshots = props
+    .filter(x => Number(x.edgeScore || 0) < 70)
+    .slice(0,12);
 
-<div class="headrow">
+  content.innerHTML = `
 
-<div>
-<h2>My Slip</h2>
-<span class="muted">
-${slip.length} selection${slip.length===1?"":"s"}
-</span>
-</div>
+    <section class="hero">
 
-</div>
+      <div class="eyebrow">
+        💰 LONGSHOT HUNTER
+      </div>
 
-${slip.length
-?`
-<div class="grid">
-${slip.map(i=>card(P[i])).join("")}
-</div>
+      <h1>
+        Hunt the<br>
+        <span>big ones.</span>
+      </h1>
 
-<button class="btn alt" id="clear">
-Clear Slip
-</button>
-`
-:`
-<div class="empty">
-Your slip is empty.
-<br><br>
-Add a play from the Prop Board.
-</div>
-`}
-`;
+      <p>
+        Higher-variance player props separated from the
+        strongest core plays for users looking for upside.
+      </p>
+
+    </section>
+
+    <div class="section-head">
+
+      <div>
+        <h2 class="section-title">💰 Longshot Board</h2>
+        <div class="section-sub">
+          Higher-variance opportunities
+        </div>
+      </div>
+
+    </div>
+
+    <div class="grid">
+
+      ${
+        longshots.length
+          ? longshots.map(card).join("")
+          : empty(
+              "No longshots available",
+              "Longshot opportunities will appear when live NFL props are available."
+            )
+      }
+
+    </div>
+
+  `;
+
+  bindCards();
+
 }
 
-document.querySelectorAll("[data-i]").forEach(b=>{
-b.onclick=()=>{
-const i=Number(b.dataset.i);
+function renderSlip(){
 
-if(slip.includes(i)){
-slip=slip.filter(v=>v!==i);
-}else{
-slip.push(i);
+  const selections = props.filter(
+    x => slip.includes(propId(x))
+  );
+
+  content.innerHTML = `
+
+    <div class="section-head">
+
+      <div>
+        <h2 class="section-title">🧾 My Slip</h2>
+        <div class="section-sub">
+          Your saved EdgeHunt selections
+        </div>
+      </div>
+
+    </div>
+
+    <div class="slip-summary">
+
+      <div>
+        <strong>${selections.length}</strong>
+        <span> selections</span>
+      </div>
+
+      <button class="clear" id="clearSlip">
+        CLEAR SLIP
+      </button>
+
+    </div>
+
+    <div class="grid">
+
+      ${
+        selections.length
+          ? selections.map(card).join("")
+          : empty(
+              "Your slip is empty",
+              "Add selections from the Prop Board or Top Plays."
+            )
+      }
+
+    </div>
+
+  `;
+
+  document
+    .getElementById("clearSlip")
+    ?.addEventListener("click",() => {
+      slip = [];
+      render();
+    });
+
+  bindCards();
+
 }
 
-show();
-};
-});
+function render(){
 
-document.getElementById("q")?.addEventListener("input",e=>{
-q=e.target.value;
-show();
-});
+  slipCount.textContent =
+    slip.length ? `(${slip.length})` : "";
 
-document.getElementById("clear")?.addEventListener("click",()=>{
-slip=[];
-show();
-});
+  if(page === "home"){
+    renderHome();
+    return;
+  }
+
+  if(page === "props"){
+    renderProps();
+    return;
+  }
+
+  if(page === "long"){
+    renderLongshots();
+    return;
+  }
+
+  if(page === "slip"){
+    renderSlip();
+    return;
+  }
+
 }
 
-async function loadLive(){
+function bindCards(){
 
-try{
+  document.querySelectorAll("[data-slip]").forEach(button => {
 
-const response=await fetch(
-"/api/nfl-props",
-{cache:"no-store"}
-);
+    button.onclick = () => {
 
-const data=await response.json();
+      const id =
+        decodeURIComponent(button.dataset.slip);
 
-if(!response.ok){
-throw new Error(data.error||"Live feed error");
+      if(slip.includes(id)){
+        slip = slip.filter(x => x !== id);
+      }else{
+        slip.push(id);
+      }
+
+      render();
+
+    };
+
+  });
+
+  document.querySelectorAll("[data-view]").forEach(button => {
+
+    button.onclick = () => {
+
+      const id =
+        decodeURIComponent(button.dataset.view);
+
+      const item =
+        props.find(x => propId(x) === id);
+
+      if(!item) return;
+
+      alert(
+        `${item.player}\n\n` +
+        `${item.side} ${item.line} ${marketName(item.market)}\n\n` +
+        `Projection: ${formatNumber(item.projection)}\n` +
+        `Edge Score: ${item.edgeScore ?? "—"}\n` +
+        `L5: ${formatHit(item.l5?.hitRate)}\n` +
+        `L10: ${formatHit(item.l10?.hitRate)}\n` +
+        `L20: ${formatHit(item.l20?.hitRate)}`
+      );
+
+    };
+
+  });
+
 }
 
-if(data.props?.length){
+async function loadModel(){
 
-P=makeLiveProps(data.props);
+  try{
 
-live=true;
+    status.textContent =
+      "Loading EdgeHunt model...";
 
-status.textContent=
-"🟢 LIVE NFL ODDS • Auto-refreshing every 60 seconds";
+    const response =
+      await fetch(
+        "/api/edge-model",
+        {cache:"no-store"}
+      );
 
-}else{
+    const data =
+      await response.json();
 
-P=[];
-live=false;
+    if(!response.ok){
+      throw new Error(
+        data?.detail ||
+        data?.error ||
+        "Model unavailable"
+      );
+    }
 
-status.textContent=
-"🟡 No current NFL player props available • Checking again in 60 seconds";
+    props =
+      Array.isArray(data.props)
+        ? data.props
+        : [];
+
+    live = props.length > 0;
+
+    if(live){
+
+      status.textContent =
+        `🟢 LIVE EDGEHUNT MODEL • ${props.length} plays`;
+
+    }else{
+
+      status.textContent =
+        "🟡 No live NFL props available • Checking again in 60 seconds";
+
+    }
+
+  }catch(error){
+
+    console.error(error);
+
+    props = [];
+    live = false;
+
+    status.textContent =
+      "🟡 Live market unavailable • EdgeHunt is ready";
+
+  }
+
+  render();
+
 }
-
-}catch(error){
-
-console.error(error);
-
-P=[];
-live=false;
-
-status.textContent=
-"🔴 Live NFL feed unavailable • Checking again in 60 seconds";
-}
-
-show();
-}
-
-document.querySelectorAll("[data-page]").forEach(b=>{
-
-b.onclick=()=>{
 
 document
-.querySelectorAll("[data-page]")
-.forEach(x=>x.classList.remove("active"));
+  .querySelectorAll("[data-page]")
+  .forEach(button => {
 
-b.classList.add("active");
+    button.onclick = () => {
 
-page=b.dataset.page;
+      document
+        .querySelectorAll("[data-page]")
+        .forEach(x =>
+          x.classList.remove("active")
+        );
 
-show();
+      button.classList.add("active");
 
-};
+      page =
+        button.dataset.page;
 
-});
+      render();
 
-show();
-loadLive();
-setInterval(loadLive,60000);
+    };
+
+  });
+
+render();
+loadModel();
+
+setInterval(
+  loadModel,
+  60000
+);
+
 </script>
 
 </body>
