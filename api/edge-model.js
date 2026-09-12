@@ -132,7 +132,7 @@ export default async function handler(req, res) {
 
     for (const row of stats) {
       const key = normalize(row.player_name);
-      if (Number(row.season) < 2025) continue;
+      
 
       if (!key) continue;
 
