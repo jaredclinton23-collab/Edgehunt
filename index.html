@@ -1715,9 +1715,222 @@ function bindCards(){
         props.find(x => propId(x) === id);
 
       if(!item) return;
+const games = Array.isArray(item.historyGames)
+  ? item.historyGames.slice(0, 12)
+  : [];
 
-      
-      );
+const books = Array.isArray(item.books)
+  ? item.books
+  : [];
+
+const esc = value =>
+  String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+
+const maxValue = Math.max(
+  Number(item.line) || 0,
+  ...games.map(g => Number(g.value) || 0),
+  1
+);
+
+const chart = games.length
+  ? games.slice().reverse().map(game => {
+      const value = Number(game.value) || 0;
+      const height = Math.max(8, (value / maxValue) * 150);
+      const hit =
+        item.line != null
+          ? value >= Number(item.line)
+          : false;
+
+      return `
+        <div class="history-item">
+          <div class="history-value">${value}</div>
+          <div
+            class="history-bar ${hit ? "hit" : "miss"}"
+            style="height:${height}px"
+          ></div>
+          <div class="history-label">
+            Wk ${esc(game.week)}
+          </div>
+        </div>
+      `;
+    }).join("")
+  : `
+      <div style="
+        grid-column:1/-1;
+        display:grid;
+        place-items:center;
+        color:#777788;
+        min-height:180px;
+        font-size:11px;
+      ">
+        No game history available yet.
+      </div>
+    `;
+
+const booksHtml = books.length
+  ? books.map(book => `
+      <div class="prop-book">
+        <span>${esc(book.book)}</span>
+        <b>
+          ${book.over
+            ? `O ${book.over.line} (${book.over.price})`
+            : "—"}
+        </b>
+        <b>
+          ${book.under
+            ? `U ${book.under.line} (${book.under.price})`
+            : "—"}
+        </b>
+      </div>
+    `).join("")
+  : `
+      <div class="prop-book">
+        <span>SPORTSBOOKS</span>
+        <b>Live lines unavailable</b>
+      </div>
+    `;
+
+const overlay = document.createElement("div");
+
+overlay.className = "prop-detail";
+
+overlay.innerHTML = `
+  <div class="prop-detail-box">
+
+    <div class="prop-detail-head">
+
+      <div class="prop-detail-player">
+        <div class="prop-detail-avatar">
+          ${esc(String(item.player || "?").slice(0, 2).toUpperCase())}
+        </div>
+
+        <div>
+          <div class="prop-detail-name">
+            ${esc(item.player)}
+          </div>
+
+          <div class="prop-detail-meta">
+            ${esc(item.matchup || "NFL")}
+          </div>
+        </div>
+      </div>
+
+      <button class="prop-close" type="button">×</button>
+
+    </div>
+
+    <div class="prop-detail-body">
+
+      <div class="prop-detail-pick">
+
+        <div>
+          <div class="prop-detail-market">
+            ${esc(marketName(item.market))}
+          </div>
+
+          <div class="prop-detail-line">
+            <span>${esc(item.side || "OVER")}</span>
+            ${esc(item.line)}
+          </div>
+        </div>
+
+        <div class="prop-detail-score">
+          <b>${esc(item.edgeScore ?? "—")}</b>
+          <span>EDGE SCORE</span>
+        </div>
+
+      </div>
+
+      <div class="prop-detail-stats">
+
+        <div class="detail-stat">
+          <span>Projection</span>
+          <b>${formatNumber(item.projection)}</b>
+        </div>
+
+        <div class="detail-stat">
+          <span>L5</span>
+          <b>${formatHit(item.l5?.hitRate)}</b>
+        </div>
+
+        <div class="detail-stat">
+          <span>L10</span>
+          <b>${formatHit(item.l10?.hitRate)}</b>
+        </div>
+
+        <div class="detail-stat">
+          <span>L20</span>
+          <b>${formatHit(item.l20?.hitRate)}</b>
+        </div>
+
+        <div class="detail-stat">
+          <span>Games</span>
+          <b>${games.length}</b>
+        </div>
+
+      </div>
+
+      <div class="prop-section-title">
+        2025 → 2026 GAME HISTORY
+      </div>
+
+      <div class="prop-history">
+        ${chart}
+      </div>
+
+      <div class="prop-section-title">
+        SPORTSBOOK ODDS
+      </div>
+
+      <div class="prop-books">
+        ${booksHtml}
+      </div>
+
+      <div class="prop-detail-actions">
+
+        <button class="detail-close" type="button">
+          CLOSE
+        </button>
+
+        <button class="primary detail-slip" type="button">
+          ADD TO SLIP
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+`;
+
+document.body.appendChild(overlay);
+
+const closeDetail = () => {
+  overlay.remove();
+};
+
+overlay.querySelector(".prop-close").onclick = closeDetail;
+overlay.querySelector(".detail-close").onclick = closeDetail;
+
+overlay.onclick = event => {
+  if (event.target === overlay) {
+    closeDetail();
+  }
+};
+
+overlay.querySelector(".detail-slip").onclick = () => {
+  const propKey = propId(item);
+
+  if (!slip.includes(propKey)) {
+    slip.push(propKey);
+    render();
+  }
+
+  closeDetail();
+};
 
     };
 
