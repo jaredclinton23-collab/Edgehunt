@@ -41,7 +41,9 @@ export default async function handler(req, res) {
 
     const props = [];
 
-    for (const row of Array.isArray(data) ? data : data.props || []) {
+    const rows = Array.isArray(data) ? data : data.props || data.data || data.results || [];
+
+for (const row of rows) {
       const playerName = row.player_name || row.player || "";
 if (!playerName || row.line === undefined) continue;
 
